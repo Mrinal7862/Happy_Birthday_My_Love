@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Photo Swipe Game 📸💜</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet"/>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Nunito',sans-serif;background:linear-gradient(135deg,#fffbe6 0%,#f3e8ff 60%,#fce7f3 100%);min-height:100vh;}
+#root{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:20px;}
+
+.page{display:none;}
+.page.on{display:flex;flex-direction:column;align-items:center;}
+
+.card-stack{position:relative;width:300px;height:380px;margin-top:20px;}
+
+.swipe-card{
+  position:absolute;
+  width:300px;
+  height:380px;
+  border-radius:20px;
+  overflow:hidden;
+  background:#fff;
+  box-shadow:0 10px 30px rgba(0,0,0,.1);
+  transition:transform .4s ease, opacity .4s;
+}
+
+.card-img{
+  width:100%;
+  height:260px;
+  object-fit:cover;
+}
+
+.card-body{
+  padding:10px;
+  text-align:center;
+  font-weight:bold;
+  color:#7c3aed;
+}
+
+.fly-left{transform:translateX(-120%) rotate(-20deg);opacity:0;}
+.fly-right{transform:translateX(120%) rotate(20deg);opacity:0;}
+
+.btn{
+  margin-top:20px;
+  padding:10px 20px;
+  border:none;
+  border-radius:10px;
+  background:#7c3aed;
+  color:#fff;
+  cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div id="root">
+
+<div class="page on" id="pg-setup">
+  <h2>Photo Swipe 💜</h2>
+  <button class="btn" onclick="startGame()">Start</button>
+</div>
+
+<div class="page" id="pg-game">
+  <div class="card-stack" id="card-stack"></div>
+
+  <div>
+    <button class="btn" onclick="swipeCard('left')">👈</button>
+    <button class="btn" onclick="swipeCard('right')">💜</button>
+  </div>
+</div>
+
+</div>
+
+<script>
+
+// ✅ HARD CODED PHOTOS
+let photos = [
+  { url: "Images/img1.jpg", caption: "Us Forever" },
+  { url: "Images/img2.jpg", caption: "7th june apna Long Distance" },
+  { url: "Images/img3.jpg", caption: "August 8, Long Distance ke baad 2nd meetup" },
+  { url: "Images/img4.jpg", caption: "Apni Pehli Image Fea ki...yaad aaya kuch Anju" },
+  { url: "Images/img5.jpg", caption: "Anju be like: Aise kya dekh raha hai? kharab lg rhi hoon kya main<br>Minu be like: Pyaari to hai....." },
+  { url: "Images/img6.jpg", caption: "Daat phaarte hue 2 namune" },
+  { url: "Images/img7.jpg", caption: "Minu be like: Shona hum khila rahe ache se " },
+  { url: "Images/img8.jpg", caption: "First Navratri" },
+  { url: "Images/img9.jpg", caption: "Anju be like: Kaise jaanwar ke tarah khaate ho ruko hum ache se khila rahe💛" },
+  { url: "Images/img10.jpg", caption: "Aree anju kadi hass bhi diya karo.... 💛" },
+  { url: "Images/img11.jpg", caption: "Minu Uncle & Anju Aunty hehe.. 💛" },
+  { url: "Images/img12.jpg", caption: "FEA KI kuch yaadein 💛" },
+  { url: "Images/img13.jpg", caption: "Anju be like: Koi na koi ladki ke piche to para hai...minu <br> Minu be like: kitna bhi overthinking kar le hai to meri pyaari si bubbu hi 💛" },
+  { url: "Images/img14.jpg", caption: "Ghats💛" },
+  { url: "Images/img15.jpg", caption: "Pashu-Pati nath temple, Varanasi version" },
+  { url: "Images/img16.jpg", caption: "Anju: Minuaa pitaao ge bahut zyada mazzak banae mera to... <br> Minu: heheheheeh......" },
+  { url: "Images/img17.jpg", caption: "Hum dono ka mangal-sutra..hehe" },
+  // { url: "Images/img19.jpg", caption: "Anju  💛" },
+  { url: "Images/img18.jpg", caption: "Anju: Aree photo to ache se khichwaya karo minu " },
+  
+];
+
+// ✅ HARD CODED MUSIC
+let bgAudio = new Audio("music/tumMile.mp3");
+bgAudio.loop = true;
+bgAudio.volume = 0.5;
+
+let cards = [];
+let current = 0;
+
+// 🚀 START GAME
+function startGame(){
+  cards = [...photos];
+  current = 0;
+  buildCards();
+  showPage("pg-game");
+
+  bgAudio.currentTime = 0;
+  bgAudio.play().catch(()=>{});
+}
+
+// 📦 BUILD CARDS
+function buildCards(){
+  const stack = document.getElementById("card-stack");
+  stack.innerHTML = "";
+
+  cards.forEach((p,i)=>{
+    const el = document.createElement("div");
+    el.className = "swipe-card";
+    el.style.zIndex = i;
+
+    el.innerHTML = `
+      <img src="${p.url}" class="card-img">
+      <div class="card-body">${p.caption}</div>
+    `;
+
+    stack.appendChild(el);
+  });
+}
+
+// 👉 SWIPE
+function swipeCard(dir){
+  const stack = document.getElementById("card-stack");
+  const top = stack.lastElementChild;
+
+  if(!top) return;
+
+  top.classList.add(dir === "right" ? "fly-right" : "fly-left");
+
+  setTimeout(()=>{
+    top.remove();
+    current++;
+
+    if(current >= cards.length){
+      alert("End 💜");
+      return;
+    }
+  },400);
+}
+
+// 🔁 PAGE SWITCH
+function showPage(id){
+  ["pg-setup","pg-game"].forEach(p=>{
+    document.getElementById(p).classList.toggle("on",p===id);
+  });
+}
+
+</script>
+
+</body>
+</html>

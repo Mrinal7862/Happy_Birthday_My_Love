@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Happy Birthday My Love 💜✨</title>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;;}
+body{background:#0a0015;overflow:hidden;font-family:'Nunito',sans-serif;height:100vh;width:100vw;}
+canvas{position:fixed;top:0;left:0;width:100%;height:100%;display:block;}
+#ui{position:fixed;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;z-index:10;}
+.title{font-family:'Pacifico',cursive;font-size:clamp(2rem,6vw,3.8rem);color:#fff;text-align:center;text-shadow:0 0 40px #c084fc,0 0 80px #7c3aed;opacity:0;animation:fadeInUp 1.8s 1.2s forwards;line-height:1.3;padding:0 20px;}
+.subtitle{font-size:clamp(1rem,3vw,1.5rem);color:#f5d0fe;text-align:center;margin-top:14px;opacity:0;animation:fadeInUp 1.8s 2.2s forwards;text-shadow:0 0 20px #a855f7;}
+.heart-row{font-size:clamp(1.2rem,3vw,1.8rem);margin-top:18px;opacity:0;animation:fadeInUp 1.8s 3s forwards;letter-spacing:8px;}
+.note-box{margin-top:28px;background:rgba(168,85,247,.15);border:1px solid rgba(196,132,252,.3);border-radius:20px;padding:16px 28px;max-width:480px;text-align:center;opacity:0;animation:fadeInUp 1.8s 3.6s forwards;}
+.note-text{font-size:clamp(.85rem,2.2vw,1rem);color:#e9d5ff;line-height:1.8;font-style:italic;}
+.btn-row{margin-top:24px;display:flex;gap:14px;flex-wrap:wrap;justify-content:center;opacity:0;animation:fadeInUp 1.8s 4.2s forwards;pointer-events:all;}
+.btn{padding:11px 26px;border-radius:50px;border:none;font-family:'Nunito',sans-serif;font-weight:700;font-size:.95rem;cursor:pointer;transition:transform .15s;}
+.btn-purple{background:linear-gradient(135deg,#a855f7,#7c3aed);color:white;box-shadow:0 0 20px rgba(168,85,247,.5);}
+.btn-yellow{background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#4a1b0c;box-shadow:0 0 20px rgba(251,191,36,.4);}
+.btn:hover{transform:scale(1.06);}
+.edit-panel{position:fixed;bottom:0;left:0;right:0;background:rgba(15,0,30,.97);border-top:1px solid rgba(168,85,247,.3);padding:20px 24px;z-index:20;transform:translateY(100%);transition:transform .4s cubic-bezier(.4,0,.2,1);}
+.edit-panel.open{transform:translateY(0);}
+.edit-title{font-family:'Pacifico',cursive;color:#c084fc;font-size:1.1rem;margin-bottom:14px;}
+.edit-row{display:flex;flex-direction:column;gap:10px;max-width:600px;margin:0 auto;}
+.edit-input{background:rgba(255,255,255,.07);border:1px solid rgba(196,132,252,.35);border-radius:10px;padding:10px 14px;color:#e9d5ff;font-family:'Nunito',sans-serif;font-size:14px;outline:none;width:100%;}
+.edit-input:focus{border-color:#a855f7;}
+.edit-input::placeholder{color:rgba(196,132,252,.5);}
+.edit-actions{display:flex;gap:10px;margin-top:6px;}
+.edit-btn{padding:9px 22px;border-radius:10px;border:none;font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;cursor:pointer;}
+.edit-save{background:#a855f7;color:white;}
+.edit-cancel{background:rgba(255,255,255,.08);color:#c084fc;}
+.music-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:4px;}
+.music-label-btn{background:rgba(168,85,247,.2);border:1px solid rgba(196,132,252,.4);border-radius:8px;padding:7px 14px;font-size:13px;font-weight:700;color:#c084fc;cursor:pointer;}
+.music-filename{font-size:12px;color:#a855f7;}
+.sparkle-cursor{position:fixed;pointer-events:none;z-index:50;font-size:16px;}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+
+/* NAV */
+#nav{position:fixed;top:0;left:0;right:0;z-index:30;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;}
+.nav-logo{font-family:'Pacifico',cursive;font-size:1.1rem;color:#fde68a;text-shadow:0 0 16px rgba(251,191,36,.5);pointer-events:none;}
+.nav-toggle{background:rgba(168,85,247,.25);border:1.5px solid rgba(196,132,252,.35);border-radius:50px;padding:8px 16px;color:#e9d5ff;font-family:'Nunito',sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:background .2s;backdrop-filter:blur(8px);}
+.nav-toggle:hover{background:rgba(168,85,247,.45);}
+.nav-drawer{position:fixed;top:0;right:0;height:100vh;width:280px;background:rgba(10,0,30,.97);border-left:1px solid rgba(196,132,252,.2);z-index:40;transform:translateX(100%);transition:transform .4s cubic-bezier(.4,0,.2,1);padding:24px 20px;display:flex;flex-direction:column;gap:10px;backdrop-filter:blur(16px);}
+.nav-drawer.open{transform:translateX(0);}
+.nav-close{align-self:flex-end;background:none;border:none;color:#c084fc;font-size:22px;cursor:pointer;margin-bottom:8px;}
+.nav-section-title{font-size:11px;font-weight:700;color:#7c3aed;letter-spacing:1.5px;text-transform:uppercase;margin:10px 0 4px;padding-left:4px;}
+.nav-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;border:1px solid rgba(196,132,252,.15);background:rgba(255,255,255,.04);cursor:pointer;transition:all .2s;text-decoration:none;}
+.nav-item:hover{background:rgba(168,85,247,.2);border-color:rgba(196,132,252,.4);transform:translateX(-3px);}
+.nav-item.active-page{background:rgba(168,85,247,.15);border-color:rgba(168,85,247,.4);}
+.nav-icon{font-size:22px;width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.nav-icon.purple{background:rgba(168,85,247,.2);}
+.nav-icon.yellow{background:rgba(251,191,36,.15);}
+.nav-icon.pink{background:rgba(244,114,182,.15);}
+.nav-icon.teal{background:rgba(20,184,166,.15);}
+.nav-icon.green{background:rgba(34,197,94,.12);}
+.nav-info{display:flex;flex-direction:column;}
+.nav-name{font-size:14px;font-weight:700;color:#e9d5ff;}
+.nav-desc{font-size:11px;color:#a855f7;margin-top:2px;}
+.nav-overlay{position:fixed;inset:0;z-index:35;background:rgba(0,0,0,.4);display:none;}
+.nav-overlay.show{display:block;}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+
+<div id="nav">
+  <div class="nav-logo">🎂 Birthday Hub</div>
+  <button class="nav-toggle" onclick="toggleNav()">☰ All Activities</button>
+</div>
+
+<div class="nav-overlay" id="nav-overlay" onclick="closeNav()"></div>
+
+<div class="nav-drawer" id="nav-drawer">
+  <button class="nav-close" onclick="closeNav()">✕</button>
+  <div style="font-family:'Pacifico',cursive;color:#fde68a;font-size:1.1rem;margin-bottom:4px">🎂 Birthday Hub</div>
+  <div style="font-size:12px;color:#a855f7;margin-bottom:12px">All her special surprises 💜</div>
+
+  <div class="nav-section-title">🎆 You are here</div>
+  <a class="nav-item active-page" href="birthday_2_fireworks.html">
+    <div class="nav-icon purple">🌟</div>
+    <div class="nav-info"><div class="nav-name">Starry Fireworks</div><div class="nav-desc">Click to launch fireworks</div></div>
+  </a>
+
+  <div class="nav-section-title">🎮 Games</div>
+  <!-- <a class="nav-item" href="birthday_1_memory_game.html">
+    <div class="nav-icon yellow">🃏</div>
+    <div class="nav-info"><div class="nav-name">Memory Card Game</div><div class="nav-desc">Match the cards, win a surprise</div></div>
+  </a> -->
+  <!-- <a class="nav-item" href="birthday_3_giftbox.html">
+    <div class="nav-icon pink">🎁</div>
+    <div class="nav-info"><div class="nav-name">Gift Box Game</div><div class="nav-desc">Open gifts & find surprises</div></div>
+  </a> -->
+  <a class="nav-item" href="birthday_4_photoswipe.html">
+    <div class="nav-icon teal">📸</div>
+    <div class="nav-info"><div class="nav-name">Photo Swipe Game</div><div class="nav-desc">Swipe through our memories</div></div>
+  </a>
+
+  <div class="nav-section-title">🎵 Music</div>
+  <a class="nav-item" href="birthday_5_musicplayer.html">
+    <div class="nav-icon green">🎧</div>
+    <div class="nav-info"><div class="nav-name">Her Playlist</div><div class="nav-desc">All her favourite songs</div></div>
+  </a>
+</div>
+
+<div id="ui">
+  <div class="title" id="main-title">Happy Birthday,<br>My Love! 🎂</div>
+  <div class="subtitle" id="main-subtitle">Wishing you a night full of magic &amp; wonder ✨</div>
+  <div class="heart-row">💜 💛 💜</div>
+  <div class="note-box"><div class="note-text" id="main-note">You are the brightest star in my sky, and tonight the whole universe celebrates you. Every firework up there is a wish I'm sending just for you. Happy Birthday, my love! 💛💜</div></div>
+  <div class="btn-row">
+    <button class="btn btn-purple" onclick="launchBurst()">Launch Fireworks 🎆</button>
+    <!-- <button class="btn btn-yellow" onclick="openEdit()">Customise ✏️</button> -->
+  </div>
+</div>
+<div class="edit-panel" id="edit-panel">
+  <div style="max-width:600px;margin:0 auto">
+    <div class="edit-title">✏️ Personalise</div>
+    <div class="edit-row">
+      <input class="edit-input" id="e-name" placeholder="Her name (e.g. My Love, Priya...)" maxlength="30"/>
+      <input class="edit-input" id="e-subtitle" placeholder="Subtitle message..." maxlength="80"/>
+      <textarea class="edit-input" id="e-note" placeholder="Your love note..." rows="3" style="resize:vertical"></textarea>
+      <div class="music-row">
+        <label class="music-label-btn" for="music-file">🎵 Upload song</label>
+        <input type="file" id="music-file" accept="audio/*" style="display:none" onchange="loadMusic(this)"/>
+        <span class="music-filename" id="music-name">No file chosen</span>
+      </div>
+    </div>
+    <div class="edit-actions">
+      <button class="edit-btn edit-save" onclick="saveEdit()">Save 💜</button>
+      <button class="edit-btn edit-cancel" onclick="closeEdit()">Cancel</button>
+    </div>
+  </div>
+</div>
+<script>
+const canvas=document.getElementById('c'),ctx=canvas.getContext('2d');
+let W,H;
+function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}
+resize();window.addEventListener('resize',resize);
+const stars=[];for(let i=0;i<220;i++)stars.push({x:Math.random(),y:Math.random(),r:Math.random()*1.6+.3,twinkle:Math.random()*Math.PI*2,speed:Math.random()*.02+.005});
+const particles=[];let audioEl=null,audioPlaying=false;
+function spawnFirework(x,y){const hues=[280,260,300,45,55,320,200],hue=hues[Math.floor(Math.random()*hues.length)],count=80+Math.floor(Math.random()*60);for(let i=0;i<count;i++){const angle=(Math.PI*2/count)*i+Math.random()*.3,speed=Math.random()*6+2;particles.push({x,y,vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed,alpha:1,color:`hsl(${hue+Math.random()*40},100%,${65+Math.random()*20}%)`,r:Math.random()*2.5+1,decay:Math.random()*.012+.012,trail:[]});}for(let i=0;i<20;i++){const angle=Math.random()*Math.PI*2,speed=Math.random()*3+1;particles.push({x,y,vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed,alpha:1,color:'#ffffff',r:Math.random()*1.5+.5,decay:.025,trail:[]});}}
+function autoFirework(){spawnFirework(W*.15+Math.random()*W*.7,H*.1+Math.random()*H*.5);}
+function launchBurst(){for(let i=0;i<5;i++)setTimeout(autoFirework,i*220);}
+setInterval(autoFirework,1400);setTimeout(()=>{for(let i=0;i<4;i++)setTimeout(autoFirework,i*300);},800);
+const floaters=[];const floatChars=['💜','💛','✨','🌟','💫','🌸'];for(let i=0;i<18;i++)floaters.push({x:Math.random()*100,y:100+Math.random()*80,size:14+Math.random()*14,speed:.15+Math.random()*.25,char:floatChars[Math.floor(Math.random()*floatChars.length)],phase:Math.random()*Math.PI*2,amp:30+Math.random()*30});
+let frame=0;
+function draw(){frame++;const bg=ctx.createLinearGradient(0,0,0,H);bg.addColorStop(0,'#050010');bg.addColorStop(.5,'#0a0020');bg.addColorStop(1,'#120028');ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);stars.forEach(s=>{s.twinkle+=s.speed;const alpha=.5+.5*Math.sin(s.twinkle);ctx.beginPath();ctx.arc(s.x*W,s.y*H,s.r,0,Math.PI*2);ctx.fillStyle=`rgba(255,255,240,${alpha})`;ctx.fill();});for(let i=particles.length-1;i>=0;i--){const p=particles[i];p.trail.push({x:p.x,y:p.y,a:p.alpha});if(p.trail.length>6)p.trail.shift();p.x+=p.vx;p.y+=p.vy;p.vy+=.07;p.vx*=.98;p.alpha-=p.decay;if(p.alpha<=0){particles.splice(i,1);continue;}p.trail.forEach((t,ti)=>{ctx.beginPath();ctx.arc(t.x,t.y,p.r*(ti/p.trail.length)*.7,0,Math.PI*2);ctx.globalAlpha=t.a*.25;ctx.fillStyle=p.color;ctx.fill();});ctx.globalAlpha=p.alpha;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=p.color;ctx.fill();ctx.globalAlpha=1;}floaters.forEach(f=>{f.y-=f.speed;if(f.y<-5)f.y=105;const x=(f.x/100)*W+Math.sin(frame*.01+f.phase)*f.amp;ctx.globalAlpha=.55;ctx.font=f.size+'px serif';ctx.fillText(f.char,x,(f.y/100)*H);ctx.globalAlpha=1;});requestAnimationFrame(draw);}
+draw();
+canvas.addEventListener('click',e=>{spawnFirework(e.clientX,e.clientY);const el=document.createElement('div');el.className='sparkle-cursor';el.textContent='✨';el.style.left=(e.clientX-10)+'px';el.style.top=(e.clientY-10)+'px';document.body.appendChild(el);setTimeout(()=>el.remove(),600);});
+function openEdit(){document.getElementById('edit-panel').classList.add('open');}
+function closeEdit(){document.getElementById('edit-panel').classList.remove('open');}
+function saveEdit(){const name=document.getElementById('e-name').value.trim(),sub=document.getElementById('e-subtitle').value.trim(),note=document.getElementById('e-note').value.trim();if(name)document.getElementById('main-title').innerHTML='Happy Birthday,<br>'+name+'! 🎂';if(sub)document.getElementById('main-subtitle').textContent=sub;if(note)document.getElementById('main-note').textContent=note;closeEdit();}
+function loadMusic(inp){const f=inp.files[0];if(!f)return;document.getElementById('music-name').textContent=f.name.length>28?f.name.slice(0,25)+'...':f.name;if(audioEl){audioEl.pause();audioEl.src='';}audioEl=new Audio(URL.createObjectURL(f));audioEl.loop=true;audioEl.volume=.5;audioEl.play().catch(()=>{});audioPlaying=true;}
+function toggleNav(){document.getElementById('nav-drawer').classList.toggle('open');document.getElementById('nav-overlay').classList.toggle('show');}
+function closeNav(){document.getElementById('nav-drawer').classList.remove('open');document.getElementById('nav-overlay').classList.remove('show');}
+</script>
+</body>
+</html>

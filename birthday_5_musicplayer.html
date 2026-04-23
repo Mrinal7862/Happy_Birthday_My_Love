@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Her Birthday Playlist 🎧💜</title>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Nunito:wght@400;700;800&display=swap"
+    rel="stylesheet" />
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #1a0033 0%, #2d0057 40%, #1a0033 100%);
+    }
+
+    #root {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 16px 40px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .floaty {
+      position: absolute;
+      pointer-events: none;
+      font-size: 16px;
+      animation: floatUp 7s ease-in infinite;
+      opacity: 0;
+      z-index: 0;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: .5
+      }
+
+      100% {
+        transform: translateY(-110vh) rotate(20deg);
+        opacity: 0
+      }
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .player-wrap {
+      width: 100%;
+      max-width: 420px;
+      z-index: 2;
+      position: relative;
+    }
+
+    .pac {
+      font-family: 'Pacifico', cursive;
+      color: #fde68a;
+      text-align: center;
+      text-shadow: 0 0 30px rgba(251, 191, 36, .5);
+    }
+
+    .now-playing {
+      background: rgba(255, 255, 255, .06);
+      border: 1.5px solid rgba(196, 132, 252, .25);
+      border-radius: 28px;
+      padding: 28px 24px 22px;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+
+    .album-art {
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      margin: 0 auto 18px;
+      background: linear-gradient(135deg, #7c3aed, #a855f7, #fbbf24);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 64px;
+      border: 4px solid rgba(196, 132, 252, .4);
+      position: relative;
+    }
+
+    .album-art.spinning {
+      animation: spin 4s linear infinite;
+    }
+
+    @keyframes spin {
+      from {
+        transform: rotate(0deg)
+      }
+
+      to {
+        transform: rotate(360deg)
+      }
+    }
+
+    .album-art img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .album-center {
+      position: absolute;
+      width: 28px;
+      height: 28px;
+      background: #1a0033;
+      border-radius: 50%;
+      border: 3px solid rgba(196, 132, 252, .4);
+    }
+
+    .song-title {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: #fde68a;
+      margin-bottom: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .song-artist {
+      font-size: .9rem;
+      color: #d8b4fe;
+      font-style: italic;
+    }
+
+    .progress-wrap {
+      margin: 16px 0 8px;
+      cursor: pointer;
+    }
+
+    .progress-bg {
+      width: 100%;
+      height: 5px;
+      background: rgba(255, 255, 255, .15);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #a855f7, #fbbf24);
+      border-radius: 99px;
+      transition: width .5s linear;
+      width: 0%;
+    }
+
+    .time-row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 4px;
+      font-size: 11px;
+      color: #c084fc;
+      font-weight: 700;
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      margin-top: 16px;
+    }
+
+    .ctrl-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 22px;
+      color: #d8b4fe;
+      transition: transform .15s, color .15s;
+      padding: 6px;
+    }
+
+    .ctrl-btn:hover {
+      transform: scale(1.15);
+      color: #fde68a;
+    }
+
+    .play-btn {
+      background: linear-gradient(135deg, #a855f7, #7c3aed);
+      border: none;
+      border-radius: 50%;
+      width: 58px;
+      height: 58px;
+      font-size: 24px;
+      cursor: pointer;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 24px rgba(168, 85, 247, .5);
+      transition: transform .15s;
+    }
+
+    .play-btn:hover {
+      transform: scale(1.08);
+    }
+
+    .vol-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 14px;
+      justify-content: center;
+    }
+
+    .vol-icon {
+      font-size: 16px;
+      color: #c084fc;
+    }
+
+    .vol-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 120px;
+      height: 4px;
+      border-radius: 99px;
+      background: rgba(255, 255, 255, .2);
+      outline: none;
+      cursor: pointer;
+    }
+
+    .vol-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #a855f7;
+      cursor: pointer;
+    }
+
+    .playlist-wrap {
+      background: rgba(255, 255, 255, .05);
+      border: 1.5px solid rgba(196, 132, 252, .2);
+      border-radius: 22px;
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+
+    .pl-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .pl-title {
+      font-family: 'Pacifico', cursive;
+      font-size: 1rem;
+      color: #fde68a;
+    }
+
+    .pl-count {
+      font-size: 12px;
+      color: #c084fc;
+      font-weight: 700;
+    }
+
+    .pl-list {
+      max-height: 280px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(168, 85, 247, .4) transparent;
+    }
+
+    .pl-list::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .pl-list::-webkit-scrollbar-thumb {
+      background: rgba(168, 85, 247, .4);
+      border-radius: 99px;
+    }
+
+    .pl-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background .15s;
+    }
+
+    .pl-item:hover {
+      background: rgba(255, 255, 255, .08);
+    }
+
+    .pl-item.active {
+      background: rgba(168, 85, 247, .2);
+      border: 1px solid rgba(168, 85, 247, .3);
+    }
+
+    .pl-num {
+      font-size: 12px;
+      color: #c084fc;
+      font-weight: 700;
+      width: 18px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .pl-art {
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      flex-shrink: 0;
+      object-fit: cover;
+    }
+
+    .pl-art-placeholder {
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      flex-shrink: 0;
+      background: linear-gradient(135deg, #7c3aed, #a855f7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .pl-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .pl-song {
+      font-size: 13px;
+      font-weight: 700;
+      color: #e9d5ff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .pl-artist {
+      font-size: 11px;
+      color: #a855f7;
+      margin-top: 2px;
+    }
+
+    .pl-bars {
+      display: flex;
+      gap: 2px;
+      align-items: flex-end;
+      height: 16px;
+      flex-shrink: 0;
+    }
+
+    .pl-bar {
+      width: 3px;
+      background: #fbbf24;
+      border-radius: 2px;
+      animation: barBounce .5s ease-in-out infinite alternate;
+    }
+
+    .pl-bar:nth-child(2) {
+      animation-delay: .15s;
+      height: 10px;
+    }
+
+    .pl-bar:nth-child(3) {
+      animation-delay: .3s;
+      height: 14px;
+    }
+
+    @keyframes barBounce {
+      from {
+        height: 4px
+      }
+
+      to {
+        height: 14px
+      }
+    }
+
+    .add-wrap {
+      background: rgba(255, 255, 255, .05);
+      border: 1.5px dashed rgba(196, 132, 252, .3);
+      border-radius: 18px;
+      padding: 16px;
+    }
+
+    .add-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #fde68a;
+      margin-bottom: 12px;
+    }
+
+    .add-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .add-inp {
+      background: rgba(255, 255, 255, .07);
+      border: 1px solid rgba(196, 132, 252, .3);
+      border-radius: 10px;
+      padding: 9px 12px;
+      color: #e9d5ff;
+      font-family: 'Nunito', sans-serif;
+      font-size: 13px;
+      outline: none;
+      width: 100%;
+    }
+
+    .add-inp:focus {
+      border-color: #a855f7;
+    }
+
+    .add-inp::placeholder {
+      color: rgba(196, 132, 252, .5);
+    }
+
+    .file-label {
+      grid-column: 1/-1;
+      background: rgba(168, 85, 247, .15);
+      border: 1.5px dashed rgba(196, 132, 252, .4);
+      border-radius: 10px;
+      padding: 10px;
+      text-align: center;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 700;
+      color: #c084fc;
+      transition: background .2s;
+    }
+
+    .file-label:hover {
+      background: rgba(168, 85, 247, .25);
+    }
+
+    .file-name {
+      grid-column: 1/-1;
+      font-size: 11px;
+      color: #a855f7;
+      text-align: center;
+    }
+
+    .add-btn {
+      grid-column: 1/-1;
+      background: linear-gradient(90deg, #a855f7, #7c3aed);
+      border: none;
+      border-radius: 10px;
+      padding: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      font-family: 'Nunito', sans-serif;
+      color: #fff;
+      cursor: pointer;
+      transition: transform .15s;
+    }
+
+    .add-btn:hover {
+      transform: scale(1.03);
+    }
+
+    .edit-name-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 18px;
+      z-index: 2;
+    }
+
+    .edit-name-inp {
+      background: rgba(255, 255, 255, .07);
+      border: 1px solid rgba(196, 132, 252, .3);
+      border-radius: 10px;
+      padding: 6px 12px;
+      color: #fde68a;
+      font-family: 'Pacifico', cursive;
+      font-size: 1rem;
+      outline: none;
+      text-align: center;
+    }
+
+    .edit-name-inp:focus {
+      border-color: #fbbf24;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 24px 0;
+      color: #c084fc;
+      font-size: 13px;
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="stars-canvas"></canvas>
+  <div id="root">
+    <div class="floaty" style="left:5%;animation-delay:0s">🎵</div>
+    <div class="floaty" style="left:22%;animation-delay:1.5s">💜</div>
+    <div class="floaty" style="left:45%;animation-delay:2.8s">✨</div>
+    <div class="floaty" style="left:68%;animation-delay:.9s">🎶</div>
+    <div class="floaty" style="left:88%;animation-delay:3.3s">💛</div>
+
+    <div style="font-size:44px;text-align:center;margin-bottom:8px;z-index:2">🎧</div>
+    <div class="pac" style="font-size:1.9rem;z-index:2">Aapki aur Meri Pyaari si Playlist 💜</div>
+    <div class="edit-name-row">
+      <input class="edit-name-inp" id="playlist-name-inp" value="My Love's Favourite Songs" maxlength="36" />
+    </div>
+
+    <div class="player-wrap">
+      <div class="now-playing">
+        <div class="album-art" id="album-art"><span style="font-size:64px">🎵</span>
+          <div class="album-center"></div>
+        </div>
+        <div class="song-title" id="song-title">No song playing</div>
+        <div class="song-artist" id="song-artist">Add songs below 💜</div>
+        <div class="progress-wrap" id="progress-wrap" onclick="seekAudio(event)">
+          <div class="progress-bg">
+            <div class="progress-fill" id="progress-fill"></div>
+          </div>
+          <div class="time-row"><span id="time-cur">0:00</span><span id="time-total">0:00</span></div>
+        </div>
+        <div class="controls">
+          <button class="ctrl-btn" onclick="toggleShuffle()" id="shuffle-btn">🔀</button>
+          <button class="ctrl-btn" onclick="prevSong()">⏮</button>
+          <button class="play-btn" id="play-btn" onclick="togglePlay()">▶</button>
+          <button class="ctrl-btn" onclick="nextSong()">⏭</button>
+          <button class="ctrl-btn" onclick="toggleRepeat()" id="repeat-btn">🔁</button>
+        </div>
+        <div class="vol-row">
+          <span class="vol-icon">🔈</span>
+          <input type="range" class="vol-slider" min="0" max="100" value="80" step="1"
+            oninput="setVolume(this.value)" />
+          <span class="vol-icon">🔊</span>
+        </div>
+      </div>
+
+      <div class="playlist-wrap">
+        <div class="pl-header">
+          <div class="pl-title">Playlist</div>
+          <div class="pl-count" id="pl-count">0 songs</div>
+        </div>
+        <div class="pl-list" id="pl-list">
+          <div class="empty-state">
+            <div style="font-size:36px;margin-bottom:8px">🎶</div>Add songs below!
+          </div>
+        </div>
+      </div>
+
+      <div class="add-wrap">
+        <p class="pac">
+          Happy Birthday Mera Shona, Sorry Babu hum pichle birthday tumhare gift ni de paae shona, par shona hum chaahte
+          hai aap khoob aage barho shona, khoob tarakki karo aur minu ke saath har jagah ghummi-ghummi karne chalo shona
+          mera babu
+          ab to aap 21 ki ho gyi shona, btw ye playlist sunna poora aapke favourite songs hai aur 2-3 mere hehe aur
+          imagine karna hum aur aap <<<<<<<<<<3. <br><br>
+            Anju shona hum dono me bohot ladai hoti rehti hai ....
+            hai na!! par shona, aapka minu kabhi aapko nhi chhorega kuch bhi ho jaae, 2 saal to ho gya hai, lekin puri
+            zindagi aapke saath bitani hai...
+            <br><br>
+            Anju hum dekh rahe aap apni health ka dhyaan nhi rakhti bacha abhi hum aapke paas nhi hai na shona, aap
+            pichle hafte Dr. ke yaha bhi jaane waali thi lekin nhi gayi, Aap ye bohot galat krr rhi shona
+            <br><br>
+            <br>
+            Ye duriyaan jld hi khatam ho jaaega shona, ek doosra ka hamesha saath dete hue, jo bhi kar rahe shona hum
+            dono ke liye hi kar rahe babu aur suno agar hum log ka pyaar pakka hai to koi nazzar kuch ni kar sakta shona
+            mera samjhi
+            <br>
+            Batana shona kaisa bana Website....
+            <br>
+            Love you babu mera......................Minu hamesha pyaar karega aapko just like
+            <br>
+        </p>
+        <h2>L.I.C.</h2>
+      </div>
+    </div>
+  </div>
+  </div>
+  <script>
+
+    /* ================================================================
+       🎵 SONGS LIST — YAHAN APNI SONGS ADD KAREIN
+       
+       FOLDER STRUCTURE (sab ek hi folder mein rakhein):
+       
+       birthday/
+       ├── birthday_5_musicplayer.html    ← yeh file
+       ├── songs/
+       │   ├── song1.mp3                  ← aapki audio files
+       │   ├── song2.mp3
+       │   └── song3.mp3
+       └── covers/
+           ├── cover1.jpg                 ← album art (optional)
+           └── cover2.jpg
+       
+       HAR SONG KE LIYE YEH FORMAT:
+       {
+         title  : "Song ka naam",
+         artist : "Artist ka naam",
+         url    : "songs/filename.mp3",     ← exact file naam daalo
+         artUrl : "covers/filename.jpg"     ← art nahi hai toh "" ya hatao
+       },
+       ================================================================ */
+
+    const PRESET_SONGS = [
+
+      // ↓↓↓ APNI SONGS YAHAN LIKHEIN ↓↓↓
+
+      {
+        title: "Tum mile",
+        artist: "....",
+        url: "Audio/song1.mp3",
+        artUrl: "covers/cover1.jpg"
+      },
+      {
+        title: "Uska hi Banna",
+        artist: "",
+        url: "Audio/song2.mp3",
+        artUrl: "covers/cover2.jpg"
+      },
+      {
+        title: "Tujhe main Pyaar karu",
+        artist: "...",
+        url: "Audio/song3.mp3",
+        artUrl: ""
+      },
+      {
+        title: "Khud ko tere",
+        artist: "...",
+        url: "Audio/song4.mp3",
+        artUrl: ""
+      },
+      {
+        title: "Tere Bina",
+        artist: "...",
+        url: "Audio/song5.mp3",
+        artUrl: ""
+      },
+      {
+        title: "Baatein ye kabhi na",
+        artist: "...",
+        url: "Audio/song6.mp3",
+        artUrl: ""
+      },
+      {
+        title: "Tum ho mera Pyaar",
+        artist: "...",
+        url: "Audio/song7.mp3",
+        artUrl: ""
+      },
+      {
+        title: "Kabhi na Kabhi",
+        artist: "...",
+        url: "Audio/song8.mp3",
+        artUrl: ""
+      },
+      {
+        title: "Khairiyat",
+        artist: "...",
+        url: "Audio/song9.mp3",
+        artUrl: ""
+      },
+      {
+        title: "Muskurane ki wajah tum ho",
+        artist: "...",
+        url: "Audio/song10.mp3",
+        artUrl: ""
+      },
+      {
+        title: "Jitni dafa",
+        artist: "...",
+        url: "Audio/song11.mp3",
+        artUrl: ""
+      },
+      {
+        title: "Hasi Ban Gaye",
+        artist: "...",
+        url: "Audio/song13.mp3",
+        artUrl: ""
+      },
+      {
+        title: "Kuch to Hai",
+        artist: "...",
+        url: "Audio/song14.mp3",
+        artUrl: ""
+      },
+      {
+        title: "Pal",
+        artist: "...",
+        url: "Audio/song15.mp3",
+        artUrl: ""
+      },
+      {
+        title: "Itni si baat hai",
+        artist: "...",
+        url: "Audio/song16.mp3",
+        artUrl: ""
+      },
+      {
+        title: "Bol do na zara",
+        artist: "...",
+        url: "Audio/song17.mp3",
+        artUrl: ""
+      },
+      {
+        title: "Jab tak",
+        artist: "...",
+        url: "Audio/song18.mp3",
+        artUrl: ""
+      },
+      {
+        title: "Tere Bina",
+        artist: "...",
+        url: "Audio/song19.mp3",
+        artUrl: ""
+      },
+      {
+        title: "Koi fariyaad",
+        artist: "...",
+        url: "Audio/song20.mp3",
+        artUrl: ""
+      },
+      {
+        title: "Tum Bin jiya jaae kaise",
+        artist: "...",
+        url: "Audio/song21.mp3",
+        artUrl: ""
+      },
+      {
+        title: "Mai Tumhara",
+        artist: "Love you mera Shona <3💜",
+        url: "Audio/song22.mp3",
+        artUrl: ""
+      },
+
+
+      // ↑↑↑ YAHAN TAK — last entry ke baad comma mat lagana ↑↑↑
+
+    ];
+
+    /* ================================================================ */
+
+    const songs = PRESET_SONGS.map(s => ({ ...s }));
+    let curIdx = -1, audio = null, isPlaying = false, isShuffle = false, isRepeat = false;
+    let pendingFile = null, pendingArtUrl = null;
+
+    function init() {
+      renderPlaylist();
+      if (songs.length > 0) playSong(0);
+    }
+
+    function onFileChosen(inp) {
+      const f = inp.files[0]; if (!f) return; pendingFile = f;
+      const n = f.name;
+      document.getElementById('add-file-name').textContent = n.length > 36 ? n.slice(0, 33) + '...' : n;
+      if (!document.getElementById('add-title-inp').value)
+        document.getElementById('add-title-inp').value = n.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' ');
+    }
+    function onArtChosen(inp) {
+      const f = inp.files[0]; if (!f) return;
+      pendingArtUrl = URL.createObjectURL(f);
+      document.getElementById('add-art-name').textContent = f.name.length > 30 ? f.name.slice(0, 27) + '...' : f.name;
+    }
+    function addSongFromUpload() {
+      if (!pendingFile) { alert('Please choose an audio file!'); return; }
+      const title = document.getElementById('add-title-inp').value.trim() || pendingFile.name.replace(/\.[^.]+$/, '');
+      const artist = document.getElementById('add-artist-inp').value.trim() || 'Unknown Artist';
+      songs.push({ title, artist, url: URL.createObjectURL(pendingFile), artUrl: pendingArtUrl || '' });
+      pendingFile = null; pendingArtUrl = null;
+      document.getElementById('add-title-inp').value = '';
+      document.getElementById('add-artist-inp').value = '';
+      document.getElementById('add-file-inp').value = '';
+      document.getElementById('add-art-inp').value = '';
+      document.getElementById('add-file-name').textContent = 'No file chosen';
+      document.getElementById('add-art-name').textContent = 'No art chosen';
+      renderPlaylist();
+      if (songs.length === 1) playSong(0);
+    }
+
+    function renderPlaylist() {
+      const list = document.getElementById('pl-list');
+      document.getElementById('pl-count').textContent = songs.length + ' song' + (songs.length !== 1 ? 's' : '');
+      if (songs.length === 0) {
+        list.innerHTML = '<div class="empty-state"><div style="font-size:36px;margin-bottom:8px">🎶</div>Add your songs below!</div>';
+        return;
+      }
+      list.innerHTML = '';
+      songs.forEach((s, i) => {
+        const el = document.createElement('div');
+        el.className = 'pl-item' + (i === curIdx ? ' active' : '');
+        el.innerHTML = `
+      ${i === curIdx ? `<div class="pl-bars"><div class="pl-bar"></div><div class="pl-bar"></div><div class="pl-bar"></div></div>` : `<div class="pl-num">${i + 1}</div>`}
+      ${s.artUrl ? `<img class="pl-art" src="${s.artUrl}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/><div class="pl-art-placeholder" style="display:none">🎵</div>` : `<div class="pl-art-placeholder">🎵</div>`}
+      <div class="pl-info"><div class="pl-song">${s.title}</div><div class="pl-artist">${s.artist}</div></div>`;
+        el.onclick = () => playSong(i);
+        list.appendChild(el);
+      });
+      const a = list.querySelector('.active');
+      if (a) a.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+
+    function playSong(idx) {
+      if (idx < 0 || idx >= songs.length) return;
+      stopAudio(); curIdx = idx;
+      const s = songs[idx];
+      audio = new Audio(s.url);
+      audio.volume = document.querySelector('.vol-slider').value / 100;
+      audio.addEventListener('timeupdate', updateProgress);
+      audio.addEventListener('ended', onEnded);
+      audio.addEventListener('loadedmetadata', () => updateProgress());
+      audio.play().then(() => { isPlaying = true; updateUI(); }).catch(() => { });
+      updateNowPlaying(s);
+      renderPlaylist();
+    }
+    function updateNowPlaying(s) {
+      document.getElementById('song-title').textContent = s.title;
+      document.getElementById('song-artist').textContent = s.artist;
+      const art = document.getElementById('album-art');
+      art.innerHTML = s.artUrl
+        ? `<img src="${s.artUrl}" onerror="this.outerHTML='<span style=font-size:64px>🎵</span>'"/><div class="album-center"></div>`
+        : `<span style="font-size:64px">🎵</span><div class="album-center"></div>`;
+      art.classList.add('spinning');
+    }
+    function togglePlay() {
+      if (!audio) { if (songs.length > 0) playSong(0); return; }
+      if (isPlaying) { audio.pause(); isPlaying = false; } else { audio.play(); isPlaying = true; }
+      updateUI();
+    }
+    function stopAudio() {
+      if (audio) { audio.pause(); audio.removeEventListener('timeupdate', updateProgress); audio.removeEventListener('ended', onEnded); audio = null; }
+      isPlaying = false;
+      document.getElementById('album-art').classList.remove('spinning');
+    }
+    function updateUI() {
+      document.getElementById('play-btn').textContent = isPlaying ? '⏸' : '▶';
+      document.getElementById('album-art').classList.toggle('spinning', isPlaying);
+      document.getElementById('shuffle-btn').style.color = isShuffle ? '#fde68a' : '#d8b4fe';
+      document.getElementById('repeat-btn').style.color = isRepeat ? '#fde68a' : '#d8b4fe';
+    }
+    function updateProgress() {
+      if (!audio || !audio.duration) return;
+      document.getElementById('progress-fill').style.width = (audio.currentTime / audio.duration * 100) + '%';
+      document.getElementById('time-cur').textContent = fmt(audio.currentTime);
+      document.getElementById('time-total').textContent = fmt(audio.duration);
+    }
+    function fmt(s) { if (isNaN(s)) return '0:00'; const m = Math.floor(s / 60), sec = Math.floor(s % 60); return m + ':' + (sec < 10 ? '0' : '') + sec; }
+    function seekAudio(e) {
+      if (!audio || !audio.duration) return;
+      const rect = document.getElementById('progress-wrap').getBoundingClientRect();
+      audio.currentTime = ((e.clientX - rect.left) / rect.width) * audio.duration;
+    }
+    function nextSong() { if (!songs.length) return; playSong(isShuffle ? Math.floor(Math.random() * songs.length) : (curIdx + 1) % songs.length); }
+    function prevSong() { if (!songs.length) return; if (audio && audio.currentTime > 3) { audio.currentTime = 0; return; } playSong((curIdx - 1 + songs.length) % songs.length); }
+    function onEnded() { if (isRepeat) { audio.currentTime = 0; audio.play(); return; } nextSong(); }
+    function toggleShuffle() { isShuffle = !isShuffle; updateUI(); }
+    function toggleRepeat() { isRepeat = !isRepeat; updateUI(); }
+    function setVolume(v) { if (audio) audio.volume = v / 100; }
+
+    const canvas = document.getElementById('stars-canvas'), ctx2 = canvas.getContext('2d'); let starsArr = [];
+    function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; starsArr = []; for (let i = 0; i < 180; i++)starsArr.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, r: Math.random() * 1.4 + .2, a: Math.random(), speed: Math.random() * .015 + .003 }); }
+    resizeCanvas(); window.addEventListener('resize', resizeCanvas);
+    function drawStars() { ctx2.clearRect(0, 0, canvas.width, canvas.height); starsArr.forEach(s => { s.a += s.speed; ctx2.beginPath(); ctx2.arc(s.x, s.y, s.r, 0, Math.PI * 2); ctx2.fillStyle = `rgba(255,255,240,${.3 + .4 * Math.sin(s.a)})`; ctx2.fill(); }); requestAnimationFrame(drawStars); }
+    drawStars();
+
+    init();
+  </script>
+</body>
+
+</html>
