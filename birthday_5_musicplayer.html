@@ -301,6 +301,7 @@
       border-radius: 12px;
       cursor: pointer;
       transition: background .15s;
+      position: relative;
     }
 
     .pl-item:hover {
@@ -510,11 +511,264 @@
       color: #c084fc;
       font-size: 13px;
     }
+
+    /* =============================================
+       💜 FLOATING PHOTOS SECTION
+       ============================================= */
+    .photos-section {
+      width: 100%;
+      max-width: 420px;
+      z-index: 2;
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    .photos-section-header {
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    .photos-section-title {
+      font-family: 'Pacifico', cursive;
+      font-size: 1.1rem;
+      color: #fde68a;
+      text-shadow: 0 0 20px rgba(251, 191, 36, .4);
+    }
+
+    .photos-section-sub {
+      font-size: 12px;
+      color: #c084fc;
+      margin-top: 4px;
+    }
+
+    /* Floating bubbles container */
+    .float-bubbles {
+      position: relative;
+      width: 100%;
+      height: 320px;
+      overflow: hidden;
+      border-radius: 24px;
+      background: rgba(255, 255, 255, .03);
+      border: 1.5px solid rgba(196, 132, 252, .15);
+    }
+
+    .bubble {
+      position: absolute;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 3px solid rgba(196, 132, 252, .5);
+      box-shadow: 0 0 20px rgba(168, 85, 247, .3), 0 0 40px rgba(168, 85, 247, .1);
+      animation: waveBubble var(--dur) ease-in-out infinite;
+      animation-delay: var(--delay);
+      cursor: pointer;
+      transition: transform .2s, box-shadow .2s;
+      background: linear-gradient(135deg, #7c3aed, #a855f7);
+    }
+
+    .bubble:hover {
+      transform: scale(1.12) !important;
+      box-shadow: 0 0 30px rgba(251, 191, 36, .5), 0 0 60px rgba(168, 85, 247, .3);
+      z-index: 10;
+    }
+
+    .bubble img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .bubble .bubble-emoji {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+    }
+
+    @keyframes waveBubble {
+      0% {
+        transform: translate(0px, 0px) rotate(0deg);
+      }
+
+      25% {
+        transform: translate(var(--tx1), var(--ty1)) rotate(var(--r1));
+      }
+
+      50% {
+        transform: translate(var(--tx2), var(--ty2)) rotate(var(--r2));
+      }
+
+      75% {
+        transform: translate(var(--tx3), var(--ty3)) rotate(var(--r3));
+      }
+
+      100% {
+        transform: translate(0px, 0px) rotate(0deg);
+      }
+    }
+
+    /* heart pulse ring on active bubble */
+    .bubble.active-bubble::after {
+      content: '';
+      position: absolute;
+      inset: -6px;
+      border-radius: 50%;
+      border: 2.5px solid #fbbf24;
+      animation: ringPulse 1.2s ease-out infinite;
+    }
+
+    @keyframes ringPulse {
+      0% {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      100% {
+        opacity: 0;
+        transform: scale(1.4);
+      }
+    }
+
+    /* Lightbox */
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .85);
+      z-index: 999;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 14px;
+      padding: 24px;
+    }
+
+    .lightbox.open {
+      display: flex;
+    }
+
+    .lightbox img {
+      max-width: 90vw;
+      max-height: 70vh;
+      border-radius: 20px;
+      border: 3px solid rgba(196, 132, 252, .5);
+      box-shadow: 0 0 40px rgba(168, 85, 247, .4);
+      object-fit: contain;
+      animation: popIn .35s cubic-bezier(.4, 0, .2, 1);
+    }
+
+    .lightbox-caption {
+      font-family: 'Pacifico', cursive;
+      color: #fde68a;
+      font-size: 1.1rem;
+      text-align: center;
+      text-shadow: 0 0 20px rgba(251, 191, 36, .5);
+    }
+
+    .lightbox-close {
+      position: absolute;
+      top: 16px;
+      right: 20px;
+      font-size: 28px;
+      color: #c084fc;
+      cursor: pointer;
+      background: none;
+      border: none;
+      line-height: 1;
+      transition: color .2s;
+    }
+
+    .lightbox-close:hover {
+      color: #fde68a;
+    }
+
+    @keyframes popIn {
+      from {
+        transform: scale(.8);
+        opacity: 0
+      }
+
+      to {
+        transform: scale(1);
+        opacity: 1
+      }
+    }
+
+    /* Upload strip for photos */
+    .photo-upload-strip {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255, 255, 255, .04);
+      border: 1.5px dashed rgba(196, 132, 252, .3);
+      border-radius: 14px;
+      padding: 10px 14px;
+      margin-top: 12px;
+      cursor: pointer;
+      transition: background .2s;
+    }
+
+    .photo-upload-strip:hover {
+      background: rgba(168, 85, 247, .1);
+    }
+
+    .photo-upload-strip span {
+      font-size: 13px;
+      font-weight: 700;
+      color: #c084fc;
+    }
+
+    /* note card */
+    .note-card {
+      background: rgba(255, 255, 255, .05);
+      border: 1.5px solid rgba(196, 132, 252, .2);
+      border-radius: 22px;
+      padding: 22px 22px;
+      margin-bottom: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .note-card::before {
+      content: '💜';
+      position: absolute;
+      font-size: 80px;
+      right: -10px;
+      top: -10px;
+      opacity: .06;
+    }
+
+    .note-card .pac {
+      font-size: 1rem;
+      line-height: 1.9;
+      color: #e9d5ff;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 600;
+    }
+
+    .note-card h2 {
+      font-family: 'Pacifico', cursive;
+      color: #fde68a;
+      font-size: 1.3rem;
+      margin-top: 14px;
+      text-align: center;
+      letter-spacing: 3px;
+    }
   </style>
 </head>
 
 <body>
   <canvas id="stars-canvas"></canvas>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+    <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+    <img id="lb-img" src="" alt="" />
+    <div class="lightbox-caption" id="lb-caption"></div>
+  </div>
+
   <div id="root">
     <div class="floaty" style="left:5%;animation-delay:0s">🎵</div>
     <div class="floaty" style="left:22%;animation-delay:1.5s">💜</div>
@@ -526,6 +780,35 @@
     <div class="pac" style="font-size:1.9rem;z-index:2">Aapki aur Meri Pyaari si Playlist 💜</div>
     <div class="edit-name-row">
       <input class="edit-name-inp" id="playlist-name-inp" value="My Love's Favourite Songs" maxlength="36" />
+    </div>
+
+    <!-- =============================================
+         💜 FLOATING PHOTOS SECTION
+         =============================================
+         
+         YAHAN APNI PHOTOS ADD KAREIN:
+         photos/photo1.jpg, photos/photo2.jpg etc.
+         
+         Har object mein:
+           src     = "photos/filename.jpg"   (file path)
+           caption = "Kuch sweet likho"      (lightbox mein dikhega)
+           size    = px mein circle ka size  (80 to 130 recommend)
+           x, y   = % mein starting position (0-90 range)
+         ============================================= -->
+
+    <div class="photos-section" id="photos-section">
+      <div class="photos-section-header">
+        <div class="photos-section-title">Humare Kuch Pal 📸💜</div>
+        <div class="photos-section-sub">Tap karo kisi bhi photo pe 🌸</div>
+      </div>
+      <div class="float-bubbles" id="float-bubbles"></div>
+
+      <!-- Upload strip — runtime pe aur photos add kar sakte ho -->
+      <!-- <label class="photo-upload-strip" for="photo-upload-inp"> -->
+      <!-- <span style="font-size:20px">📷</span> -->
+      <!-- <span>Aur photos add karo</span> -->
+      <!-- <input type="file" id="photo-upload-inp" accept="image/*" multiple style="display:none" onchange="addUploadedPhotos(this)"/> -->
+      </label>
     </div>
 
     <div class="player-wrap">
@@ -568,7 +851,8 @@
         </div>
       </div>
 
-      <div class="add-wrap">
+      <!-- Note Card -->
+      <div class="note-card">
         <p class="pac">
           Happy Birthday Mera Shona, Sorry Babu hum pichle birthday tumhare gift ni de paae shona, par shona hum chaahte
           hai aap khoob aage barho shona, khoob tarakki karo aur minu ke saath har jagah ghummi-ghummi karne chalo shona
@@ -577,195 +861,176 @@
           imagine karna hum aur aap <<<<<<<<<<3. <br><br>
             Anju shona hum dono me bohot ladai hoti rehti hai ....
             hai na!! par shona, aapka minu kabhi aapko nhi chhorega kuch bhi ho jaae, 2 saal to ho gya hai, lekin puri
-            zindagi aapke saath bitani hai...
-            <br><br>
+            zindagi aapke saath bitani hai...<br><br>
             Anju hum dekh rahe aap apni health ka dhyaan nhi rakhti bacha abhi hum aapke paas nhi hai na shona, aap
-            pichle hafte Dr. ke yaha bhi jaane waali thi lekin nhi gayi, Aap ye bohot galat krr rhi shona
-            <br><br>
-            <br>
+            pichle hafte Dr. ke yaha bhi jaane waali thi lekin nhi gayi, Aap ye bohot galat krr rhi shona<br><br>
             Ye duriyaan jld hi khatam ho jaaega shona, ek doosra ka hamesha saath dete hue, jo bhi kar rahe shona hum
             dono ke liye hi kar rahe babu aur suno agar hum log ka pyaar pakka hai to koi nazzar kuch ni kar sakta shona
-            mera samjhi
-            <br>
-            Batana shona kaisa bana Website....
-            <br>
-            Love you babu mera......................Minu hamesha pyaar karega aapko just like
-            <br>
+            mera samjhi<br>
+            Batana shona kaisa bana Website....<br>
+            Love you babu mera......................Minu hamesha pyaar karega aapko just like<br>
         </p>
-        <h2>L.I.C.</h2>
+        <h2>L.I.C. 💜</h2>
+      </div>
+
+      <div class="add-wrap">
+        <div class="add-title">🎵 Add a Song</div>
+        <div class="add-grid">
+          <input class="add-inp" id="add-title-inp" placeholder="Song title" maxlength="50" />
+          <input class="add-inp" id="add-artist-inp" placeholder="Artist name" maxlength="40" />
+          <label class="file-label" for="add-file-inp">🎵 Choose audio file (mp3, wav, m4a...)</label>
+          <input type="file" id="add-file-inp" accept="audio/*" style="display:none" onchange="onFileChosen(this)" />
+          <div class="file-name" id="add-file-name">No file chosen</div>
+          <label class="file-label" for="add-art-inp">🖼️ Album art (optional)</label>
+          <input type="file" id="add-art-inp" accept="image/*" style="display:none" onchange="onArtChosen(this)" />
+          <div class="file-name" id="add-art-name">No art chosen</div>
+          <button class="add-btn" onclick="addSongFromUpload()">+ Add to Playlist 💜</button>
+        </div>
       </div>
     </div>
   </div>
-  </div>
+
   <script>
 
     /* ================================================================
-       🎵 SONGS LIST — YAHAN APNI SONGS ADD KAREIN
+       📸 FLOATING PHOTOS — YAHAN APNI PHOTOS ADD KAREIN
        
-       FOLDER STRUCTURE (sab ek hi folder mein rakhein):
-       
+       Folder structure:
        birthday/
-       ├── birthday_5_musicplayer.html    ← yeh file
-       ├── songs/
-       │   ├── song1.mp3                  ← aapki audio files
-       │   ├── song2.mp3
-       │   └── song3.mp3
-       └── covers/
-           ├── cover1.jpg                 ← album art (optional)
-           └── cover2.jpg
+       ├── birthday_5_musicplayer.html
+       └── photos/
+           ├── photo1.jpg
+           ├── photo2.jpg
+           └── ...
        
-       HAR SONG KE LIYE YEH FORMAT:
-       {
-         title  : "Song ka naam",
-         artist : "Artist ka naam",
-         url    : "songs/filename.mp3",     ← exact file naam daalo
-         artUrl : "covers/filename.jpg"     ← art nahi hai toh "" ya hatao
-       },
+       Har photo ke liye:
+         src     : "photos/filename.jpg"
+         caption : "Jo lightbox mein dikhega"
+         size    : circle ka diameter px mein (80–130)
+         x       : left se % position (5 to 80)
+         y       : top se % position (5 to 75)
        ================================================================ */
 
-    const PRESET_SONGS = [
+    const PRESET_PHOTOS = [
+      /* ↓↓↓ APNI PHOTOS YAHAN DAALO ↓↓↓ */
 
-      // ↓↓↓ APNI SONGS YAHAN LIKHEIN ↓↓↓
+      { src: "Images/gptImage1.png", caption: "Meri sabse pyaari 💜", size: 110, x: 5, y: 5 },
+      { src: "Images/gptImage2.png", caption: "Pre-Wedding shoot 😊", size: 90, x: 55, y: 8 },
+      { src: "Images/gptImage3.png", caption: "Hamari Maharani❤️", size: 100, x: 30, y: 30 },
+      { src: "covers/cover1.png", caption: "“Ti amo, mio dolce amore.” ❤️🌸", size: 85, x: 70, y: 40, songIndex: 0},
+      { src: "covers/cover3.png", caption: "A Love that defied time💫", size: 95, x: 10, y: 58, songIndex:2 },
+      { src: "Images/gptImage6.png", caption: "Coming soon to Theatres💜", size: 105, x: 50, y: 60, songIndex: 19 },
 
-      {
-        title: "Tum mile",
-        artist: "....",
-        url: "Audio/song1.mp3",
-        artUrl: "covers/cover1.jpg"
-      },
-      {
-        title: "Uska hi Banna",
-        artist: "",
-        url: "Audio/song2.mp3",
-        artUrl: "covers/cover2.jpg"
-      },
-      {
-        title: "Tujhe main Pyaar karu",
-        artist: "...",
-        url: "Audio/song3.mp3",
-        artUrl: ""
-      },
-      {
-        title: "Khud ko tere",
-        artist: "...",
-        url: "Audio/song4.mp3",
-        artUrl: ""
-      },
-      {
-        title: "Tere Bina",
-        artist: "...",
-        url: "Audio/song5.mp3",
-        artUrl: ""
-      },
-      {
-        title: "Baatein ye kabhi na",
-        artist: "...",
-        url: "Audio/song6.mp3",
-        artUrl: ""
-      },
-      {
-        title: "Tum ho mera Pyaar",
-        artist: "...",
-        url: "Audio/song7.mp3",
-        artUrl: ""
-      },
-      {
-        title: "Kabhi na Kabhi",
-        artist: "...",
-        url: "Audio/song8.mp3",
-        artUrl: ""
-      },
-      {
-        title: "Khairiyat",
-        artist: "...",
-        url: "Audio/song9.mp3",
-        artUrl: ""
-      },
-      {
-        title: "Muskurane ki wajah tum ho",
-        artist: "...",
-        url: "Audio/song10.mp3",
-        artUrl: ""
-      },
-      {
-        title: "Jitni dafa",
-        artist: "...",
-        url: "Audio/song11.mp3",
-        artUrl: ""
-      },
-      {
-        title: "Hasi Ban Gaye",
-        artist: "...",
-        url: "Audio/song13.mp3",
-        artUrl: ""
-      },
-      {
-        title: "Kuch to Hai",
-        artist: "...",
-        url: "Audio/song14.mp3",
-        artUrl: ""
-      },
-      {
-        title: "Pal",
-        artist: "...",
-        url: "Audio/song15.mp3",
-        artUrl: ""
-      },
-      {
-        title: "Itni si baat hai",
-        artist: "...",
-        url: "Audio/song16.mp3",
-        artUrl: ""
-      },
-      {
-        title: "Bol do na zara",
-        artist: "...",
-        url: "Audio/song17.mp3",
-        artUrl: ""
-      },
-      {
-        title: "Jab tak",
-        artist: "...",
-        url: "Audio/song18.mp3",
-        artUrl: ""
-      },
-      {
-        title: "Tere Bina",
-        artist: "...",
-        url: "Audio/song19.mp3",
-        artUrl: ""
-      },
-      {
-        title: "Koi fariyaad",
-        artist: "...",
-        url: "Audio/song20.mp3",
-        artUrl: ""
-      },
-      {
-        title: "Tum Bin jiya jaae kaise",
-        artist: "...",
-        url: "Audio/song21.mp3",
-        artUrl: ""
-      },
-      {
-        title: "Mai Tumhara",
-        artist: "Love you mera Shona <3💜",
-        url: "Audio/song22.mp3",
-        artUrl: ""
-      },
-
-
-      // ↑↑↑ YAHAN TAK — last entry ke baad comma mat lagana ↑↑↑
-
+      /* ↑↑↑ YAHAN TAK ↑↑↑ */
     ];
 
-    /* ================================================================ */
+    /* ================================================================
+       🎵 SONGS LIST
+       ================================================================ */
+    const PRESET_SONGS = [
+      { title: "Jaisi Ho Waisi raho", artist: "....", url: "Audio/song23.mp3", artUrl: "covers/cover1.png" },
+      { title: "Uska hi Banna", artist: "", url: "Audio/song2.mp3", artUrl: "covers/cover2.jpg" },
+      { title: "Tujhe main Pyaar karu", artist: "...", url: "Audio/song3.mp3", artUrl: "covers/cover3.png" },
+      { title: "Khud ko tere", artist: "...", url: "Audio/song4.mp3", artUrl: "" },
+      { title: "Tere Bina", artist: "...", url: "Audio/song5.mp3", artUrl: "" },
+      { title: "Baatein ye kabhi na", artist: "...", url: "Audio/song6.mp3", artUrl: "" },
+      { title: "Tum ho mera Pyaar", artist: "...", url: "Audio/song7.mp3", artUrl: "" },
+      { title: "Kabhi na Kabhi", artist: "...", url: "Audio/song8.mp3", artUrl: "covers/cover8.png" },
+      { title: "Khairiyat", artist: "...", url: "Audio/song9.mp3", artUrl: "" },
+      { title: "Muskurane ki wajah tum ho", artist: "...", url: "Audio/song10.mp3", artUrl: "" },
+      { title: "Jitni dafa", artist: "...", url: "Audio/song11.mp3", artUrl: "" },
+      { title: "Hasi Ban Gaye", artist: "...", url: "Audio/song13.mp3", artUrl: "" },
+      { title: "Kuch to Hai", artist: "...", url: "Audio/song14.mp3", artUrl: "" },
+      { title: "Pal", artist: "...", url: "Audio/song15.mp3", artUrl: "" },
+      { title: "Itni si baat hai", artist: "...", url: "Audio/song16.mp3", artUrl: "" },
+      { title: "Bol do na zara", artist: "...", url: "Audio/song17.mp3", artUrl: "" },
+      { title: "Jab tak", artist: "...", url: "Audio/song18.mp3", artUrl: "" },
+      { title: "Tere Bina", artist: "...", url: "Audio/song19.mp3", artUrl: "" },
+      { title: "Koi fariyaad", artist: "...", url: "Audio/song20.mp3", artUrl: "covers/cover19.png" },
+      { title: "Tum Bin jiya jaae kaise", artist: "...", url: "Audio/song21.mp3", artUrl: "covers/cover20.jpg" },
 
+      { title: "Mai Tumhara", artist: "Love you mera Shona <3💜", url: "Audio/song22.mp3", artUrl: "covers/cover22.png" },
+    ];
+
+    /* ================================================================
+       FLOATING BUBBLES — render karna
+       ================================================================ */
+    function rnd(a, b) { return a + Math.random() * (b - a); }
+
+    function buildBubbles(photoList) {
+      const container = document.getElementById('float-bubbles');
+      container.innerHTML = '';
+      photoList.forEach((p, i) => {
+        const el = document.createElement('div');
+        el.className = 'bubble';
+        const size = p.size || 90;
+        const x = p.x != null ? p.x : rnd(5, 80);
+        const y = p.y != null ? p.y : rnd(5, 75);
+        const dur = rnd(5, 9).toFixed(1) + 's';
+        const del = (i * 0.6).toFixed(1) + 's';
+        // random float vectors
+        const tx1 = rnd(-18, 18).toFixed(0) + 'px', ty1 = rnd(-20, 20).toFixed(0) + 'px';
+        const tx2 = rnd(-22, 22).toFixed(0) + 'px', ty2 = rnd(-18, 18).toFixed(0) + 'px';
+        const tx3 = rnd(-14, 14).toFixed(0) + 'px', ty3 = rnd(-22, 22).toFixed(0) + 'px';
+        const r1 = rnd(-6, 6).toFixed(1) + 'deg', r2 = rnd(-8, 8).toFixed(1) + 'deg', r3 = rnd(-5, 5).toFixed(1) + 'deg';
+
+        el.style.cssText = `
+          width:${size}px; height:${size}px;
+          left:${x}%; top:${y}%;
+          --dur:${dur}; --delay:${del};
+          --tx1:${tx1}; --ty1:${ty1};
+          --tx2:${tx2}; --ty2:${ty2};
+          --tx3:${tx3}; --ty3:${ty3};
+          --r1:${r1};   --r2:${r2};   --r3:${r3};
+        `;
+
+        if (p.src) {
+          const img = document.createElement('img');
+          img.src = p.src;
+          img.alt = p.caption || '';
+          img.onerror = () => { el.innerHTML = `<div class="bubble-emoji">📸</div>`; };
+          el.appendChild(img);
+        } else {
+          el.innerHTML = `<div class="bubble-emoji">${p.emoji || '💜'}</div>`;
+        }
+
+        el.addEventListener('click', () => {
+          openLightbox(p.src, p.caption);
+          if (p.songIndex !== undefined) playSong(p.songIndex);
+        });
+        container.appendChild(el);
+      });
+    }
+
+    function openLightbox(src, caption) {
+      if (!src) return;
+      document.getElementById('lb-img').src = src;
+      document.getElementById('lb-caption').textContent = caption || '';
+      document.getElementById('lightbox').classList.add('open');
+    }
+    function closeLightbox() { document.getElementById('lightbox').classList.remove('open'); }
+    document.getElementById('lightbox').addEventListener('click', function (e) { if (e.target === this) closeLightbox(); });
+
+    /* Runtime photo upload */
+    let runtimePhotos = [];
+    function addUploadedPhotos(inp) {
+      Array.from(inp.files).forEach(f => {
+        const url = URL.createObjectURL(f);
+        runtimePhotos.push({ src: url, caption: f.name.replace(/\.[^.]+$/, ''), size: rnd(85, 115) | 0 });
+      });
+      inp.value = '';
+      buildBubbles([...PRESET_PHOTOS, ...runtimePhotos]);
+    }
+
+    /* ================================================================
+       MUSIC PLAYER
+       ================================================================ */
     const songs = PRESET_SONGS.map(s => ({ ...s }));
     let curIdx = -1, audio = null, isPlaying = false, isShuffle = false, isRepeat = false;
     let pendingFile = null, pendingArtUrl = null;
 
     function init() {
+      buildBubbles(PRESET_PHOTOS);
       renderPlaylist();
       if (songs.length > 0) playSong(0);
     }
@@ -810,9 +1075,9 @@
         const el = document.createElement('div');
         el.className = 'pl-item' + (i === curIdx ? ' active' : '');
         el.innerHTML = `
-      ${i === curIdx ? `<div class="pl-bars"><div class="pl-bar"></div><div class="pl-bar"></div><div class="pl-bar"></div></div>` : `<div class="pl-num">${i + 1}</div>`}
-      ${s.artUrl ? `<img class="pl-art" src="${s.artUrl}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/><div class="pl-art-placeholder" style="display:none">🎵</div>` : `<div class="pl-art-placeholder">🎵</div>`}
-      <div class="pl-info"><div class="pl-song">${s.title}</div><div class="pl-artist">${s.artist}</div></div>`;
+          ${i === curIdx ? `<div class="pl-bars"><div class="pl-bar"></div><div class="pl-bar"></div><div class="pl-bar"></div></div>` : `<div class="pl-num">${i + 1}</div>`}
+          ${s.artUrl ? `<img class="pl-art" src="${s.artUrl}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/><div class="pl-art-placeholder" style="display:none">🎵</div>` : `<div class="pl-art-placeholder">🎵</div>`}
+          <div class="pl-info"><div class="pl-song">${s.title}</div><div class="pl-artist">${s.artist}</div></div>`;
         el.onclick = () => playSong(i);
         list.appendChild(el);
       });
@@ -837,10 +1102,22 @@
       document.getElementById('song-title').textContent = s.title;
       document.getElementById('song-artist').textContent = s.artist;
       const art = document.getElementById('album-art');
-      art.innerHTML = s.artUrl
-        ? `<img src="${s.artUrl}" onerror="this.outerHTML='<span style=font-size:64px>🎵</span>'"/><div class="album-center"></div>`
-        : `<span style="font-size:64px">🎵</span><div class="album-center"></div>`;
-      art.classList.add('spinning');
+
+      // Fade out
+      art.style.transition = 'opacity 0.3s';
+      art.style.opacity = '0';
+
+      setTimeout(() => {
+        art.innerHTML = s.artUrl
+          ? `<img src="${s.artUrl}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;"
+           onerror="this.outerHTML='<span style=font-size:64px>🎵</span>'"/>
+         <div class="album-center"></div>`
+          : `<span style="font-size:64px">🎵</span><div class="album-center"></div>`;
+
+        // Fade in
+        art.style.opacity = '1';
+        art.classList.add('spinning');
+      }, 300);
     }
     function togglePlay() {
       if (!audio) { if (songs.length > 0) playSong(0); return; }
@@ -877,6 +1154,7 @@
     function toggleRepeat() { isRepeat = !isRepeat; updateUI(); }
     function setVolume(v) { if (audio) audio.volume = v / 100; }
 
+    /* Stars */
     const canvas = document.getElementById('stars-canvas'), ctx2 = canvas.getContext('2d'); let starsArr = [];
     function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; starsArr = []; for (let i = 0; i < 180; i++)starsArr.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, r: Math.random() * 1.4 + .2, a: Math.random(), speed: Math.random() * .015 + .003 }); }
     resizeCanvas(); window.addEventListener('resize', resizeCanvas);
